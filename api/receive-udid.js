@@ -1,6 +1,6 @@
 const plist = require('plist');
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   // Asegurarnos de que sea una petición POST enviada por el sistema iOS
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -48,4 +48,4 @@ export default async function handler(req, res) {
     console.error('Error al procesar el UDID:', error);
     res.status(500).send(`Error procesando el perfil: ${error.message}`);
   }
-}
+};
