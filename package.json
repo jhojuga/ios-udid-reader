@@ -1,0 +1,9 @@
+{
+  "name": "udid-reader-vercel",
+  "version": "1.0.0",
+  "description": "Obtener UDID de iOS mediante Vercel",
+  "main": "index.js",
+  "dependencies": {
+    "plist": "^3.1.0"
+  }
+}
