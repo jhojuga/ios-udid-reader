@@ -51,6 +51,7 @@
     <h1>Identificador de Dispositivo (UDID)</h1>
     <p id="instruction-text">Para conocer el UDID de tu iPhone de forma segura, haz clic en el botón de abajo para descargar el perfil de configuración temporal.</p>
     <a id="download-btn" href="./profile_signed.mobileconfig" class="btn">Instalar Perfil de Configuración</a>
+    <a id="ca-download-btn" href="./myCA.pem" class="btn" download="myCA.pem">Descargar certificado CA</a>
     <!--a id="download-btn" href="./profile.mobileconfig" class="btn">Instalar Perfil de Configuración</a-->
 
     <div id="result" class="result-box">
@@ -68,6 +69,7 @@
     if (udid) {
         document.getElementById('instruction-text').style.display = 'none';
         document.getElementById('download-btn').style.display = 'none';
+        document.getElementById('ca-download-btn').style.display = 'none';
         
         const resultBox = document.getElementById('result');
         const udidCode = document.getElementById('udid-code');
