@@ -33,6 +33,17 @@
             font-weight: 600;
             margin-top: 20px;
         }
+        .btn-secondary { background-color: #34c759; border: 0; cursor: pointer; }
+        .step[hidden], #result[hidden] { display: none; }
+        .instructions {
+            background: #fff9e6;
+            border: 1px solid #ffeeba;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-top: 18px;
+            padding: 12px 18px;
+            text-align: left;
+        }
         .result-box {
             background: #e8f4fd;
             border: 1px solid #bce0fd;
@@ -49,34 +60,57 @@
 
 <div class="container">
     <h1>Identificador de Dispositivo (UDID)</h1>
-    <p id="instruction-text">Para conocer el UDID de tu iPhone de forma segura, haz clic en el botón de abajo para descargar el perfil de configuración temporal.</p>
-    <a id="download-btn" href="./profile_signed.mobileconfig" class="btn">Instalar Perfil de Configuración</a>
-    <a id="ca-download-btn" href="./myCA.pem" class="btn" download="myCA.pem">Descargar certificado CA</a>
-    <!--a id="download-btn" href="./profile.mobileconfig" class="btn">Instalar Perfil de Configuración</a-->
 
-    <div id="result" class="result-box">
+    <section id="step-ca" class="step">
+        <p><strong>Paso 1 de 2: confiar en el certificado</strong></p>
+        <p>Descarga e instala el certificado antes del perfil. iOS puede mostrar «Perfil descargado» para este archivo también; ese aviso solo significa que debes terminar la instalación en Ajustes.</p>
+        <a href="./myCA.pem" class="btn" download="myCA.pem">Descargar certificado</a>
+        <div class="instructions">
+            <ol>
+                <li>Toca «Permitir» si Safari lo solicita.</li>
+                <li>Abre Ajustes, toca «Perfil descargado» e instala el certificado.</li>
+                <li>Ve a Ajustes &gt; General &gt; Información &gt; Ajustes de confianza de los certificados y activa la confianza total para «UDID Reader Profile Signing CA».</li>
+                <li>Vuelve a esta página y confirma abajo. El sitio no puede detectar si completaste estos pasos.</li>
+            </ol>
+        </div>
+        <button id="confirm-ca-btn" type="button" class="btn btn-secondary">Ya instalé y confié en el certificado</button>
+    </section>
+
+    <section id="step-profile" class="step" hidden>
+        <p><strong>Paso 2 de 2: solicitar el UDID</strong></p>
+        <p>Descarga el perfil y luego instálalo desde Ajustes &gt; «Perfil descargado». Al completar la instalación, volverás aquí con el UDID.</p>
+        <a href="./profile_signed.mobileconfig" class="btn">Descargar perfil para obtener el UDID</a>
+        <p class="instructions">Si iOS indica que el perfil no es válido o que la firma no es confiable, no continúes: confirma que instalaste el certificado publicado junto con este perfil y activaste su confianza total.</p>
+    </section>
+
+    <div id="result" class="result-box" hidden>
         <strong>¡Listo! Tu UDID es:</strong>
         <code id="udid-code"></code>
-        <p style="font-size: 12px; margin-top: 10px; color: #86868b;">Recuerda ir a Ajustes > General > VPN y gestión de dispositivos para eliminar el perfil una vez copiado.</p>
+        <p style="font-size: 12px; margin-top: 10px; color: #86868b;">Cuando termines, elimina el perfil temporal y el certificado si ya no los necesitas: Ajustes &gt; General &gt; VPN y gestión de dispositivos.</p>
     </div>
 </div>
 
 <script>
-    // Script para leer los parámetros devueltos por el servidor tras la redirección
     const urlParams = new URLSearchParams(window.location.search);
     const udid = urlParams.get('udid');
+    const stepCa = document.getElementById('step-ca');
+    const stepProfile = document.getElementById('step-profile');
+    const resultBox = document.getElementById('result');
 
     if (udid) {
-        document.getElementById('instruction-text').style.display = 'none';
-        document.getElementById('download-btn').style.display = 'none';
-        document.getElementById('ca-download-btn').style.display = 'none';
-        
-        const resultBox = document.getElementById('result');
-        const udidCode = document.getElementById('udid-code');
-        
-        udidCode.innerText = udid;
-        resultBox.style.display = 'block';
+        stepCa.hidden = true;
+        stepProfile.hidden = true;
+        document.getElementById('udid-code').textContent = udid;
+        resultBox.hidden = false;
+    } else {
+        stepProfile.hidden = sessionStorage.getItem('ca-trusted') !== 'true';
     }
+
+    document.getElementById('confirm-ca-btn').addEventListener('click', () => {
+        sessionStorage.setItem('ca-trusted', 'true');
+        stepCa.hidden = true;
+        stepProfile.hidden = false;
+    });
 </script>
 
 </body>
