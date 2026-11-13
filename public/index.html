@@ -31,7 +31,7 @@
             padding: 12px 24px;
             border-radius: 8px;
             font-weight: 600;
-            margin-top: 14px;
+            margin-top: 20px;
         }
         #flow[hidden], #result[hidden] { display: none; }
         .instructions {
@@ -60,23 +60,22 @@
     <h1>Identificador de Dispositivo (UDID)</h1>
 
     <section id="flow">
-        <p>Haz estos dos pasos en orden para obtener el UDID con la menor fricción posible.</p>
+        <p>Para obtener el UDID, descarga e instala el perfil de configuración temporal.</p>
         <div class="instructions">
             <ol>
-                <li>Descarga e instala el certificado CA (solo la primera vez) y actívalo en Ajustes de confianza de certificados.</li>
-                <li>Descarga e instala el perfil. Al finalizar, Safari te devolverá a esta página con el UDID.</li>
+                <li>Toca el botón para descargar el perfil.</li>
+                <li>Ve a Ajustes &gt; Perfil descargado e instálalo.</li>
+                <li>Al finalizar, Safari te devolverá a esta página con el UDID.</li>
             </ol>
         </div>
-        <a id="ca-download-btn" href="./myCA.pem" class="btn" download="myCA.pem">1) Descargar certificado CA</a>
-        <br>
-        <a id="download-btn" href="./profile_signed.mobileconfig" class="btn">2) Descargar perfil de UDID</a>
+        <a id="download-btn" href="./profile_signed.mobileconfig" class="btn">Descargar perfil de UDID</a>
         <p style="font-size: 12px; margin-top: 12px; color: #86868b;">Si iOS muestra «Perfil descargado», abre Ajustes y completa la instalación.</p>
     </section>
 
     <div id="result" class="result-box" hidden>
         <strong>¡Listo! Tu UDID es:</strong>
         <code id="udid-code"></code>
-        <p style="font-size: 12px; margin-top: 10px; color: #86868b;">Cuando termines, elimina el perfil temporal y el certificado si ya no los necesitas: Ajustes &gt; General &gt; VPN y gestión de dispositivos.</p>
+        <p style="font-size: 12px; margin-top: 10px; color: #86868b;">Cuando termines, elimina el perfil temporal desde Ajustes &gt; General &gt; VPN y gestión de dispositivos.</p>
     </div>
 </div>
 

@@ -3,37 +3,36 @@
 Sitio web para obtener el UDID de un iPhone mediante un perfil de configuración
 temporal y una función de Vercel.
 
-## Firmar el perfil
+## Firma recomendada para iPhone real
 
-Se necesita OpenSSL 1.1.1 o posterior. Desde la raíz del proyecto, ejecuta:
+Para evitar errores como “Perfil no válido”, firma
+`public/profile.mobileconfig` con un certificado **leaf** y una cadena de
+confianza pública para iOS (no con una CA local autofirmada).
+
+Desde la raíz del proyecto:
 
 ```sh
-./sign-profile.sh
+sh ./sign-profile-public.sh /ruta/signer.crt /ruta/signer.key /ruta/chain.pem
 ```
 
-El script crea una CA y firma `public/profile.mobileconfig`. La clave privada se
-guarda fuera del repositorio en `~/.config/ios-udid-reader/ca.key`; únicamente
-el certificado público `public/myCA.pem` y el perfil firmado
-`public/profile_signed.mobileconfig` se publican. **Nunca copies la clave
-privada a `public/` ni la subas a GitHub.**
+Parámetros:
 
-Conserva una copia segura de la clave privada. Si se pierde, al ejecutar el
-script se crea una CA nueva y cada iPhone tendrá que instalar y confiar en el
-nuevo certificado.
+1. `signer.crt`: certificado leaf que firma el perfil.
+2. `signer.key`: llave privada del certificado leaf.
+3. `chain.pem`: cadena intermedia (sin incluir la raíz).
+
+El script genera `public/profile_signed.mobileconfig` y verifica su estructura
+CMS. **Nunca subas llaves privadas al repositorio.**
+
+## Firma local de pruebas (opcional)
+
+`sign-profile.sh` conserva una firma con CA local para pruebas de laboratorio.
+En iPhone real puede seguir mostrando “Perfil no válido”, por eso no es el
+flujo recomendado para producción.
 
 ## Uso desde el iPhone
 
-1. Abre el sitio en Safari y descarga el certificado.
-2. En Ajustes, instala el perfil descargado.
-3. En Ajustes > General > Información > Ajustes de confianza de los
-   certificados, activa la confianza total del certificado de esta aplicación.
-4. Vuelve a Safari, confirma que completaste el paso y descarga el perfil para
-   solicitar el UDID.
-5. Instálalo desde Ajustes > Perfil descargado. Al terminar, Safari vuelve a
-   mostrar el UDID.
-6. Elimina el perfil temporal y el certificado si ya no los necesitas.
-
-iOS no permite que la página compruebe si el certificado se instaló o si se
-activó la confianza; la confirmación del paso es manual. iOS puede mostrar
-«Perfil descargado» tanto para el certificado como para el perfil. Ese aviso
-no confirma que sean el mismo archivo.
+1. Abre el sitio en Safari y descarga el perfil de UDID.
+2. En Ajustes > Perfil descargado, instala el perfil.
+3. Safari vuelve a la página y muestra el UDID.
+4. Elimina el perfil temporal al terminar.
